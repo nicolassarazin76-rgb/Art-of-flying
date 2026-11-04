@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Espace artistes (démo) — Art of Flying</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { background: #F3F3EF; }
+  .demo-note { margin: 0; background: var(--accent); color: var(--ink); text-align: center; padding: 10px 16px; font-family: var(--mono); font-size: 13px; }
+  .admin { display: flex; flex-wrap: wrap; min-height: 100vh; }
+  .side { flex: 1 1 240px; max-width: 100%; background: var(--ink); color: #fff; padding: 28px 20px; display: flex; flex-direction: column; gap: 28px; }
+  .side a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; color: #D6D6D0; text-decoration: none; font-family: var(--mono); font-size: 14px; }
+  .side a.on { background: var(--accent); color: var(--ink); }
+  .main { flex: 999 1 560px; min-width: 0; padding: 40px 48px 80px; display: flex; flex-direction: column; gap: 24px; }
+  .box { position: relative; background: #fff; border: 1px solid var(--line); }
+  table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 15px; }
+  th { text-align: left; font-family: var(--mono); font-size: 12px; color: #5B5B56; font-weight: 500; padding: 14px 12px; border-bottom: 1px solid var(--ink); }
+  td { padding: 10px 12px; border-bottom: 1px solid #EEEEEA; }
+  .thumb { width: 52px; height: 40px; }
+  .admin select, .admin .box-input { min-height: 44px; padding: 0 10px; border: 1px solid #BDBDB6; background: #fff; font-family: var(--display); font-size: 15px; color: var(--ink); }
+  .switch { position: relative; width: 48px; height: 28px; border-radius: 14px; border: 0; padding: 0; cursor: pointer; background: #C9C9C2; }
+  .switch span { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .switch[aria-checked="true"] { background: var(--ink); }
+  .switch[aria-checked="true"] span { left: 23px; background: var(--accent); }
+  #list-view, #edit-view { min-width: 0; }
+  #edit-view { display: none; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+  #edit-view.open { display: flex; }
+  .panel { background: #fff; border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .admin label.field { color: #3A3A37; font-size: 12px; }
+</style>
+</head>
+<body>
+<p class="demo-note">Démonstration : les modifications ne sont pas enregistrées. Sur le vrai site, cet espace est protégé par un mot de passe.</p>
+<div class="admin">
+  <aside class="side">
+    <div style="padding: 0 12px"><div style="font-weight: 800; font-size: 20px">ART OF FLYING</div><div class="mono" style="font-size: 12px; color: #A9A9A3">Espace artistes</div></div>
+    <nav aria-label="Administration" style="display: flex; flex-direction: column; gap: 2px">
+      <a class="on" href="admin.html" aria-current="page">Œuvres</a>
+      <a href="#">Collections</a><a href="#">Demandes d'expo</a><a href="#">Expositions</a><a href="#">Presse &amp; vidéos</a><a href="#">Textes des pages</a><a href="#">Livre d'or</a>
+    </nav>
+    <a href="index.html" style="margin-top: auto; color: #A9A9A3">Voir le site →</a>
+  </aside>
+
+  <main class="main">
+    <section id="list-view" class="stack">
+      <div class="head-row" style="margin: 0; align-items: flex-end">
+        <div><h1 class="h1" style="font-size: 48px">Œuvres</h1><span class="caption" id="summary" style="font-size: 13px"></span></div>
+        <button class="btn btn-dark" type="button" id="add-btn">+ Ajouter une œuvre</button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end">
+        <label class="field" style="flex: 1 1 260px">Rechercher<input class="box-input" type="search" id="q" placeholder="Titre…"></label>
+        <label class="field" style="flex: 0 1 260px">Collection<select id="f"><option value="all">Toutes</option></select></label>
+      </div>
+      <div class="box" style="overflow-x: auto">
+        <table>
+          <thead><tr><th style="padding-left: 20px">Fig.</th><th>Titre</th><th>Collection</th><th>Où est-elle ?</th><th>En ligne</th><th><span class="sr-only">Actions</span></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="edit-view" aria-labelledby="edit-title">
+      <form class="stack" style="flex: 1.5 1 480px; min-width: 0; gap: 20px" onsubmit="return false">
+        <button type="button" id="back" class="caption" style="align-self: flex-start; border: 0; background: none; cursor: pointer; padding: 8px 0; font-size: 13px">← Œuvres</button>
+        <h1 class="h1" id="edit-title" style="font-size: 48px">Nouvelle œuvre</h1>
+        <div class="panel">
+          <span class="caption">Images</span>
+          <label class="field" style="border: 1.5px dashed #9E9E97; padding: 24px; text-align: center; cursor: pointer">Choisir ou déposer la photo principale<input type="file" accept="image/*" id="e-file" style="margin: 8px auto 0"></label>
+        </div>
+        <div class="panel">
+          <label class="field">Titre<input class="box-input" id="e-title" type="text" placeholder="ex. Aquila Nuvole" style="font-size: 18px"></label>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+            <label class="field">Collection<select id="e-col"></select></label>
+            <label class="field">Matériaux<input class="box-input" id="e-mat" type="text" placeholder="bois, toile, métal…"></label>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+            <label class="field">Dimensions<input class="box-input" id="e-size" type="text" placeholder="ex. 120 × 80 cm" style="min-width: 0"></label>
+            <label class="field">Année<input class="box-input" id="e-year" type="text" style="min-width: 0"></label>
+          </div>
+          <label class="field">Notice<textarea class="box-input" rows="4" style="padding: 12px; min-height: 120px" placeholder="De quoi s'inspire la machine, comment elle « vole »…"></textarea></label>
+          <label class="field">Prix (€) — vide = « sur demande »<input class="box-input" type="number" style="max-width: 240px"></label>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px">
+          <button class="btn btn-dark" type="button" id="save">Publier</button>
+          <button class="btn" type="button" id="cancel">Annuler</button>
+        </div>
+      </form>
+      <aside class="panel" aria-label="Aperçu" style="flex: 1 1 300px">
+        <span class="caption">Aperçu sur le site</span>
+        <div class="ph" style="aspect-ratio: 4 / 3"><span class="ph-label">[PHOTO]</span><img id="p-img" alt="" style="display: none"></div>
+        <div class="card-title"><strong id="p-title"></strong><span class="caption" id="p-fig"></span></div>
+        <span class="caption" id="p-meta"></span>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+(function () {
+  var items = CATALOG.map(function (w) { return Object.assign({ loc: 'atelier', visible: true }, w); });
+  var current = null;
+  var f = document.getElementById('f'), eCol = document.getElementById('e-col');
+  COLLECTIONS.forEach(function (c) {
+    f.insertAdjacentHTML('beforeend', '<option value="' + c.id + '">' + esc(c.label) + '</option>');
+    eCol.insertAdjacentHTML('beforeend', '<option value="' + c.id + '">' + esc(c.label) + '</option>');
+  });
+  var LOCS = { atelier: "À l'atelier", expo: 'En exposition', vendue: 'Vendue', collection: 'En collection' };
+  function render() {
+    var q = document.getElementById('q').value.toLowerCase();
+    var rows = items.filter(function (w) { return (f.value === 'all' || w.collection === f.value) && (!q || w.title.toLowerCase().indexOf(q) !== -1); });
+    document.getElementById('summary').textContent = items.length + ' œuvres dans cette démo · ' + rows.length + ' affichées';
+    document.getElementById('rows').innerHTML = rows.map(function (w) {
+      var i = items.indexOf(w);
+      var sib = items.filter(function (x) { return x.collection === w.collection; });
+      return '<tr><td class="mono" style="padding-left:20px;font-size:13px;color:#5B5B56">' + fig(sib.indexOf(w)) + '</td>' +
+        '<td><div style="display:flex;align-items:center;gap:12px"><div class="ph thumb"><img src="' + (w.img || w.image) + '" alt="" onerror="this.remove()"></div><strong>' + esc(w.title) + '</strong></div></td>' +
+        '<td>' + esc(collectionOf(w.collection).label) + '</td>' +
+        '<td><select data-i="' + i + '" class="loc" aria-label="Emplacement de ' + esc(w.title) + '">' +
+        Object.keys(LOCS).map(function (k) { return '<option value="' + k + '"' + (k === w.loc ? ' selected' : '') + '>' + LOCS[k] + '</option>'; }).join('') + '</select></td>' +
+        '<td><button type="button" class="switch" role="switch" data-i="' + i + '" aria-checked="' + w.visible + '" aria-label="Afficher ' + esc(w.title) + ' sur le site"><span></span></button></td>' +
+        '<td style="text-align:right;padding-right:20px"><button type="button" class="btn edit-btn" data-i="' + i + '" style="min-height:40px;padding:0 16px">Modifier</button></td></tr>';
+    }).join('');
+  }
+  document.getElementById('rows').addEventListener('change', function (e) { if (e.target.classList.contains('loc')) items[+e.target.dataset.i].loc = e.target.value; });
+  document.getElementById('rows').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var w = items[+b.dataset.i];
+    if (b.classList.contains('switch')) { w.visible = !w.visible; render(); }
+    if (b.classList.contains('edit-btn')) open(w);
+  });
+  document.getElementById('q').addEventListener('input', render);
+  f.addEventListener('change', render);
+
+  function preview() {
+    document.getElementById('p-title').textContent = document.getElementById('e-title').value || "Titre de l'œuvre";
+    var c = collectionOf(eCol.value);
+    var n = items.filter(function (x) { return x.collection === c.id; }).length + (current ? 0 : 1);
+    document.getElementById('p-fig').textContent = 'FIG. ' + (current ? fig(items.filter(function (x) { return x.collection === current.collection; }).indexOf(current)) : fig(n - 1));
+    document.getElementById('p-meta').textContent = c.kind + ' · ' + (document.getElementById('e-size').value || '[dimensions]');
+  }
+  function open(w) {
+    current = w;
+    document.getElementById('edit-title').textContent = w ? "Modifier l'œuvre" : 'Nouvelle œuvre';
+    document.getElementById('e-title').value = w ? w.title : '';
+    eCol.value = w ? w.collection : 'machines';
+    document.getElementById('e-mat').value = w ? w.materials : '';
+    document.getElementById('e-size').value = w ? w.size : '';
+    document.getElementById('e-year').value = w ? w.year : '';
+    var img = document.getElementById('p-img');
+    img.style.display = 'none';
+    if (w) { img.onload = function () { img.style.display = 'block'; }; img.src = w.img || w.image; }
+    document.getElementById('list-view').style.display = 'none';
+    document.getElementById('edit-view').classList.add('open');
+    preview(); window.scrollTo(0, 0);
+  }
+  function close() { document.getElementById('edit-view').classList.remove('open'); document.getElementById('list-view').style.display = 'flex'; render(); }
+  ['e-title', 'e-size', 'e-col'].forEach(function (id) { document.getElementById(id).addEventListener('input', preview); document.getElementById(id).addEventListener('change', preview); });
+  document.getElementById('e-file').addEventListener('change', function (e) {
+    var file = e.target.files[0]; if (!file) return;
+    var img = document.getElementById('p-img'); img.src = URL.createObjectURL(file); img.style.display = 'block';
+  });
+  document.getElementById('save').addEventListener('click', function () {
+    var w = current || { id: 'nouvelle-' + Date.now(), loc: 'atelier', visible: true };
+    w.title = document.getElementById('e-title').value || 'Sans titre';
+    w.collection = eCol.value;
+    w.materials = document.getElementById('e-mat').value;
+    w.size = document.getElementById('e-size').value;
+    w.year = document.getElementById('e-year').value;
+    var src = document.getElementById('p-img').getAttribute('src');
+    if (src && src.indexOf('blob:') === 0) w.img = src;
+    if (!current) items.unshift(w);
+    close();
+  });
+  document.getElementById('cancel').addEventListener('click', close);
+  document.getElementById('back').addEventListener('click', close);
+  document.getElementById('add-btn').addEventListener('click', function () { open(null); });
+  render();
+})();
+</script>
+<script src="media.js"></script></body>
+</html>

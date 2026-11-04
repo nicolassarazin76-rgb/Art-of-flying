@@ -1,0 +1,25 @@
+ART OF FLYING — VERSION CORRIGÉE POUR GITHUB
+
+Cette version contient :
+- le design bleu ;
+- les 61 œuvres et leurs images ;
+- l’accueil sans la répétition de l’ancienne page après le bloc « Accueillir les machines » ;
+- le nouveau livre d’or, les quatre témoignages et l’aperçu des nouveaux messages ;
+- les fichiers nécessaires pour raccorder le livre d’or à Supabase.
+
+1. Décompressez le ZIP. Ne déposez pas le fichier ZIP lui-même sur GitHub.
+2. Copiez tout son contenu dans votre dépôt : index.html doit être à la racine,
+   au même niveau que le dossier assets/.
+3. Publiez les fichiers avec GitHub Desktop (méthode recommandée pour toutes les images).
+4. Sur GitHub : Settings > Pages > Deploy from a branch > main > /(root) > Save.
+5. Le guide détaillé est README.md.
+
+LIVRE D’OR
+Le formulaire est préparé mais l’envoi n’est pas encore activé.
+Suivez supabase/ACTIVER-LE-LIVRE-DOR.md pour connecter le stockage et la modération.
+Aucun message n’est envoyé avant cette connexion. Aucun retour vers l’ancien livre d’or.
+
+SI VOUS AVEZ TÉLÉCHARGÉ LES QUATRE PETITS ZIP
+Décompressez les quatre ZIP dans le MÊME dossier. Le premier contient les pages et
+une partie des images ; les trois suivants complètent assets/. Il faut les quatre.
+Vous obtenez exactement les mêmes fichiers que dans le grand ZIP complet.
